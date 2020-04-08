@@ -45,6 +45,13 @@ public class MigrationTest {
     }
 
     @Test
+    public void shouldNewHaveFileAfterTransferViaCheck() {
+        String filename = oldFiles.get(0);
+        migrateFile(filename);
+        assertThat("File is not added", newStorageAPI().isFilePresent(filename), equalTo(true));
+    }
+
+    @Test
     public void shouldBeEqualAfterTransfer() throws IOException {
         String filename = oldFiles.get(0);
         String oldFile = IOUtils.toString(oldStorageAPI().getFile(filename), Charset.defaultCharset());

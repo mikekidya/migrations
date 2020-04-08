@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -83,6 +84,18 @@ class CommonStorageAPI {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean isFilePresent(String storage, String filename) {
+        String path = String.format("%s/%s/files/%s", host, storage, filename);
+        HttpHead request = new HttpHead(path);
+        try {
+            HttpResponse response = client.execute(request);
+            return response.getStatusLine().getStatusCode() == 200;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void uploadFile(String storage, InputStream file, String filename) {
