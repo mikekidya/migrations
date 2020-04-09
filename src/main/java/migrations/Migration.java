@@ -1,6 +1,9 @@
 package migrations;
 
-import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static migrations.api.NewStorageAPI.newStorageAPI;
 import static migrations.api.OldStorageAPI.oldStorageAPI;
@@ -15,9 +18,15 @@ public class Migration {
      * @param filename name of file to be transferred.
      */
     public static void migrateFile(String filename) {
-        while (!newStorageAPI().getFiles().contains(filename)) {
-            InputStream file = oldStorageAPI().getFile(filename);
-            newStorageAPI().uploadFile(file, filename);
+        if (!newStorageAPI().isFilePresent(filename)) {
+            try {
+                String file = IOUtils.toString(oldStorageAPI().getFile(filename), Charset.defaultCharset());
+                do {
+                    newStorageAPI().uploadFile(IOUtils.toInputStream(file, Charset.defaultCharset()), filename);
+                } while (!newStorageAPI().isFilePresent(filename));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         oldStorageAPI().deleteFile(filename);
     }

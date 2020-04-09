@@ -26,6 +26,10 @@ public class NewStorageAPI {
         return commonApi().getFile(PATH, filename);
     }
 
+    public boolean isFilePresent(String filename) {
+        return commonApi().isFilePresent(PATH, filename);
+    }
+
     public void uploadFile(InputStream file, String filename) {
         commonApi().uploadFile(PATH, file, filename);
     }

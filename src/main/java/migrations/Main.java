@@ -11,13 +11,19 @@ public class Main {
         List<String> files = oldStorageAPI().getFiles();
         System.out.println(String.format("Migration started: %d files to transfer", files.size()));
 
-        for (int i = 0; i < files.size(); i++) {
-            String filename = files.get(i);
-            migrateFile(filename);
-            if (i % 20 == 0) {
-                System.out.println(String.format("Files transferred: %d/%d (%d %%)",
-                        i + 1, files.size(), (100 * i) / files.size()));
+        int commonFilesNumber = files.size();
+        int filesTransferred = 0;
+
+        while (!files.isEmpty()) {
+            for (String filename : files) {
+                migrateFile(filename);
+                filesTransferred++;
+                if (filesTransferred % 20 == 0) {
+                    System.out.println(String.format("Files transferred: %d/%d (%d %%)",
+                            filesTransferred, commonFilesNumber, (100 * filesTransferred) / commonFilesNumber));
+                }
             }
+            files = oldStorageAPI().getFiles();
         }
 
         System.out.println("Finished");
