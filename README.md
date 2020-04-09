@@ -1,1 +1,1 @@
-# Mirgations
+# Migrations
